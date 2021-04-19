@@ -4,7 +4,7 @@
  *  Doubly Linked List
  *
  *  Data Structures
- *  Department of Computer Science 
+ *  Department of Computer Science
  *  at Chungbuk National University
  *
  */
@@ -13,7 +13,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
-/* ÇÊ¿äÇÑ Çì´õÆÄÀÏ Ãß°¡ if necessary */
+ /* í•„ìš”í•œ í—¤ë”íŒŒì¼ ì¶”ê°€ if necessary */
 
 
 typedef struct Node {
@@ -28,15 +28,15 @@ typedef struct Head {
 	struct Node* first;
 }headNode;
 
-/* ÇÔ¼ö ¸®½ºÆ® */
+/* í•¨ìˆ˜ ë¦¬ìŠ¤íŠ¸ */
 
-/* note: initialize´Â ÀÌÁßÆ÷ÀÎÅÍ¸¦ ¸Å°³º¯¼ö·Î ¹ÞÀ½
-         singly-linked-listÀÇ initialize¿Í Â÷ÀÌÁ¡À» ÀÌÇØ ÇÒ°Í */
+/* note: initializeëŠ” ì´ì¤‘í¬ì¸í„°ë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ìŒ
+		 singly-linked-listì˜ initializeì™€ ì°¨ì´ì ì„ ì´í•´ í• ê²ƒ */
 int initialize(headNode** h);
 
-/* note: freeList´Â ½Ì±ÛÆ÷ÀÎÅÍ¸¦ ¸Å°³º¯¼ö·Î ¹ÞÀ½
-        - initialize¿Í ¿Ö ´Ù¸¥Áö ÀÌÇØ ÇÒ°Í
-        - ÀÌÁßÆ÷ÀÎÅÍ¸¦ ¸Å°³º¯¼ö·Î ¹Þ¾Æµµ ÇØÁ¦ÇÒ ¼ö ÀÖÀ» °Í */
+/* note: freeListëŠ” ì‹±ê¸€í¬ì¸í„°ë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ìŒ
+		- initializeì™€ ì™œ ë‹¤ë¥¸ì§€ ì´í•´ í• ê²ƒ
+		- ì´ì¤‘í¬ì¸í„°ë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì•„ë„ í•´ì œí•  ìˆ˜ ìžˆì„ ê²ƒ */
 int freeList(headNode* h);
 
 int insertNode(headNode* h, int key);
@@ -54,9 +54,10 @@ int main()
 {
 	char command;
 	int key;
-	headNode* headnode=NULL;
+	headNode* headnode = NULL;
 
-	do{
+	do {
+		printf("[----- [ê³ ìŠ¹í˜„] [2016039086] -----]\n");
 		printf("----------------------------------------------------------------\n");
 		printf("                     Doubly Linked  List                        \n");
 		printf("----------------------------------------------------------------\n");
@@ -70,7 +71,7 @@ int main()
 		printf("Command = ");
 		scanf(" %c", &command);
 
-		switch(command) {
+		switch (command) {
 		case 'z': case 'Z':
 			initialize(&headnode);
 			break;
@@ -114,18 +115,33 @@ int main()
 			break;
 		}
 
-	}while(command != 'q' && command != 'Q');
+	} while (command != 'q' && command != 'Q');
 
 	return 1;
 }
 
 
 int initialize(headNode** h) {
-
+	headNode* temp = NULL;
+	if (*h != NULL)
+		freeList(*h);
+	else {
+		temp = (headNode*)malloc(sizeof(headNode));
+		temp->first = NULL;
+		*h = temp;
+	}
 	return 1;
 }
 
-int freeList(headNode* h){
+int freeList(headNode* h) {
+	listNode* select = h->first;
+	listNode* prev = NULL;
+	while (select != NULL) {
+		prev = select;
+		select = select->rlink;
+		free(prev);
+	}
+	free(h);
 	return 0;
 }
 
@@ -136,14 +152,14 @@ void printList(headNode* h) {
 
 	printf("\n---PRINT\n");
 
-	if(h == NULL) {
+	if (h == NULL) {
 		printf("Nothing to print....\n");
 		return;
 	}
 
 	p = h->first;
 
-	while(p != NULL) {
+	while (p != NULL) {
 		printf("[ [%d]=%d ] ", i, p->key);
 		p = p->rlink;
 		i++;
@@ -156,20 +172,40 @@ void printList(headNode* h) {
 
 
 /**
- * list¿¡ key¿¡ ´ëÇÑ ³ëµåÇÏ³ª¸¦ Ãß°¡
+ * listì— keyì— ëŒ€í•œ ë§ˆì§€ë§‰ì— ë…¸ë“œí•˜ë‚˜ë¥¼ ì¶”ê°€
  */
 int insertLast(headNode* h, int key) {
-
+	listNode* select = h->first;
+	listNode* temp = (listNode*)malloc(sizeof(listNode));
+	temp->key = key;
+	temp->rlink = NULL;
+	temp->llink = NULL;
+	while (select->rlink != NULL) {
+		select = select->rlink;
+	}
+	select->rlink = temp;
+	temp->llink = select;
+	temp->rlink = NULL;
 	return 0;
 }
 
 
 
 /**
- * listÀÇ ¸¶Áö¸· ³ëµå »èÁ¦
+ * listì˜ ë§ˆì§€ë§‰ ë…¸ë“œ ì‚­ì œ
  */
 int deleteLast(headNode* h) {
-
+	listNode* select = h->first;
+	if (select->rlink == NULL) {
+		free(select);
+		h->first = NULL;
+		return 0;
+	}
+	while (select->rlink != NULL) {
+		select = select->rlink;
+	}
+	select->llink->rlink = NULL;
+	free(select);
 
 	return 0;
 }
@@ -177,44 +213,127 @@ int deleteLast(headNode* h) {
 
 
 /**
- * list Ã³À½¿¡ key¿¡ ´ëÇÑ ³ëµåÇÏ³ª¸¦ Ãß°¡
+ * list ì²˜ìŒì— keyì— ëŒ€í•œ ë…¸ë“œí•˜ë‚˜ë¥¼ ì¶”ê°€
  */
 int insertFirst(headNode* h, int key) {
+	listNode* temp;
+	if (h->first == NULL) {
+		temp = (listNode*)malloc(sizeof(listNode));
+		temp->key = key;
+		temp->rlink = NULL;
+		temp->llink = NULL;
+		h->first = temp;
+	}
+	else {
+		temp = (listNode*)malloc(sizeof(listNode));
+		temp->key = key;
+		temp->rlink = NULL;
+		temp->llink = NULL;
+		h->first->llink = temp;
+		temp->rlink = h->first;
+		h->first = temp;
+	}
 	return 0;
 }
 
 /**
- * listÀÇ Ã¹¹øÂ° ³ëµå »èÁ¦
+ * listì˜ ì²«ë²ˆì§¸ ë…¸ë“œ ì‚­ì œ
  */
 int deleteFirst(headNode* h) {
-
+	listNode* select = h->first;
+	if (select->rlink == NULL) {
+		free(select);
+		h->first = NULL;
+		return 0;
+	}
+	h->first = select->rlink;
+	select->rlink->llink = NULL;
+	free(select);
 	return 0;
 }
 
 
 
 /**
- * ¸®½ºÆ®ÀÇ ¸µÅ©¸¦ ¿ª¼øÀ¸·Î Àç ¹èÄ¡
+ * ë¦¬ìŠ¤íŠ¸ì˜ ë§í¬ë¥¼ ì—­ìˆœìœ¼ë¡œ ìž¬ ë°°ì¹˜
  */
 int invertList(headNode* h) {
-
+	listNode* select = h->first;
+	listNode* temp;
+	listNode* preview = NULL;
+	for (; select; select = select->llink) {
+		temp = select->llink;
+		select->llink = select->rlink;
+		select->rlink = temp;
+		preview = select;
+	}
+	h->first = preview;
 	return 0;
 }
 
 
 
-/* ¸®½ºÆ®¸¦ °Ë»öÇÏ¿©, ÀÔ·Â¹ÞÀº keyº¸´Ù Å«°ªÀÌ ³ª¿À´Â ³ëµå ¹Ù·Î ¾Õ¿¡ »ðÀÔ */
-int insertNode(headNode* h, int key) {
 
+/* ë¦¬ìŠ¤íŠ¸ë¥¼ ê²€ìƒ‰í•˜ì—¬, ìž…ë ¥ë°›ì€ keyë³´ë‹¤ í°ê°’ì´ ë‚˜ì˜¤ëŠ” ë…¸ë“œ ë°”ë¡œ ì•žì— ì‚½ìž… */
+int insertNode(headNode* h, int key) {
+	listNode* temp;
+	listNode* preview = NULL;
+	listNode* select = h->first;
+	if (h == NULL)
+		return 0;
+
+	temp = (listNode*)malloc(sizeof(listNode));
+	temp->key = key;
+	temp->llink = NULL;
+	temp->rlink = NULL;
+	if (select == NULL) {
+		h->first = temp;
+		return 0;
+	}
+	if (temp->key <= select->key) {
+		insertFirst(h, temp->key);
+		free(temp);
+		return 0;
+	}
+
+	for (; select; select = select->rlink) {
+		if (key <= select->key) {
+			preview->rlink = temp;
+			temp->llink = preview;
+			select->llink = temp;
+			temp->rlink = select;
+			break;
+		}
+		preview = select;
+	}
+	if (select == NULL) {
+		preview->rlink = temp;
+		temp->llink = preview;
+		temp->rlink = NULL;
+	}
 	return 0;
 }
 
 
 /**
- * list¿¡¼­ key¿¡ ´ëÇÑ ³ëµå »èÁ¦
+ * listì—ì„œ keyì— ëŒ€í•œ ë…¸ë“œ ì‚­ì œ
  */
 int deleteNode(headNode* h, int key) {
-
+	listNode* select = h->first;
+	if (select == NULL)
+		return 0;
+	if (select->key == key) {
+		deleteFirst(h);
+		return 0;
+	}
+	for (; select; select = select->rlink) {
+		if (select->key == key) {
+			select->llink->rlink = select->rlink;
+			select->rlink->llink = select->llink;
+			free(select);
+			break;
+		}
+	}
 	return 1;
 }
 
