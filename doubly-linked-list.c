@@ -120,7 +120,10 @@ int main()
 	return 1;
 }
 
-
+/*이중 포인터를 매개변수로 받는 경우 포인터에 저장된 
+주소를 변경하겠다라는 의미이고 해당 함수에서 headNode구조체를 생성하고
+해당 구조체의 주소를 이중포인터로 연결을 해줘야 해당 함수가 종료되더라고
+연결관계가 유지 된다*/
 int initialize(headNode** h) {
 	headNode* temp = NULL;
 	if (*h != NULL)
@@ -132,7 +135,8 @@ int initialize(headNode** h) {
 	}
 	return 1;
 }
-
+/*select포인터 변수를 통해 모든 노드를 free해주고
+마지막에는 headNode구조체도 해제해준다*/
 int freeList(headNode* h) {
 	listNode* select = h->first;
 	listNode* prev = NULL;
@@ -145,7 +149,7 @@ int freeList(headNode* h) {
 	return 0;
 }
 
-
+/*출력*/
 void printList(headNode* h) {
 	int i = 0;
 	listNode* p;
@@ -173,6 +177,8 @@ void printList(headNode* h) {
 
 /**
  * list에 key에 대한 마지막에 노드하나를 추가
+ * 매개변수로 받은 값에 알맞게 노드를 생성하고 초기 값들을 할당하고
+ * 반복문을 통해 마지막 노드를 찾고 연결해준다
  */
 int insertLast(headNode* h, int key) {
 	listNode* select = h->first;
@@ -193,6 +199,8 @@ int insertLast(headNode* h, int key) {
 
 /**
  * list의 마지막 노드 삭제
+ * 노드가 하나만 존재하는 경우 바로 해제해주고 
+ * 그 외에는 마지막까지 이동해서 해당 노드를 해제한다
  */
 int deleteLast(headNode* h) {
 	listNode* select = h->first;
@@ -214,6 +222,9 @@ int deleteLast(headNode* h) {
 
 /**
  * list 처음에 key에 대한 노드하나를 추가
+ * 노드가 하나도 없는경우 바로 추가해주고
+ * 그외의 경우는 노드간 연결, headNode구조체와의 연결을 
+ * 실시한 후에 종료한다
  */
 int insertFirst(headNode* h, int key) {
 	listNode* temp;
@@ -238,6 +249,9 @@ int insertFirst(headNode* h, int key) {
 
 /**
  * list의 첫번째 노드 삭제
+ * 노드가 하나뿐인경우 바로 해제하고
+ * 그외의 경우는 노드를 제거하고 headNode구조체와
+ * 다음노드의 연결을 만들어주고 종료한다
  */
 int deleteFirst(headNode* h) {
 	listNode* select = h->first;
@@ -254,8 +268,10 @@ int deleteFirst(headNode* h) {
 
 
 
-/**
+/*
  * 리스트의 링크를 역순으로 재 배치
+ * 각 노드의 llink와 rlink의 연결을 바꾸어준다
+ * 그리고 headNode->first를 마지막노드와 연결해준다
  */
 int invertList(headNode* h) {
 	listNode* select = h->first;
@@ -274,7 +290,9 @@ int invertList(headNode* h) {
 
 
 
-/* 리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 */
+/* 리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입
+노드가 하나도 없는 경우 바로 연결해주고 노드가 하나 뿐인 경우 조건에 맞으면
+insertFirst함수를 호출하고 그외에는 비교해서 노드를 넣어준다 */
 int insertNode(headNode* h, int key) {
 	listNode* temp;
 	listNode* preview = NULL;
@@ -315,8 +333,10 @@ int insertNode(headNode* h, int key) {
 }
 
 
-/**
+/*
  * list에서 key에 대한 노드 삭제
+입력받은 key값과 일치하면 첫번쨰 노드의 경우는 deleteFirst함수로 제거하고
+그외의 경우는 조건문과 일치하면 삭제를 한다
  */
 int deleteNode(headNode* h, int key) {
 	listNode* select = h->first;
@@ -335,6 +355,6 @@ int deleteNode(headNode* h, int key) {
 		}
 	}
 	return 1;
+
+
 }
-
-
